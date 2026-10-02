@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import scipy.io.wavfile as wavfile_writer
+from scipy.signal import butter, sosfilt
 
 # ==============================================================================
 # Global Audio & Dataset Configuration Settings
@@ -16,36 +17,79 @@ RAW_AUDIO_OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "raw")
 # "type": {
 #     "engine_frequency": Primary engine firing/rotation frequency (hz)
 #     "blade_frequencies": Overtones produced by propeller blades
+#     "shaft_turn_rate": Propeller shaft rotation frequency / second (hz)
 #     "ocean_noise_level": Amplitude multiplier for ambient ocean noise
 # },
 # ==============================================================================
+
+# VESSEL_ACOUSTIC_PROFILES = {
+#     "cargo": {
+#         "engine_frequency": 120.0,
+#         "blade_frequencies": [240.0, 360.0],
+#         "ocean_noise_level": 0.3,
+#     },
+#     "tanker": {
+#         "engine_frequency": 80.0,
+#         "blade_frequencies": [160.0, 240.0],
+#         "ocean_noise_level": 0.4,
+#     },
+#     "passenger": {
+#         "engine_frequency": 200.0,
+#         "blade_frequencies": [400.0, 600.0],
+#         "ocean_noise_level": 0.2,
+#     },
+#     "tug": {
+#         "engine_frequency": 150.0,
+#         "blade_frequencies": [300.0, 450.0],
+#         "ocean_noise_level": 0.25,
+#     },
+# }
+
+# Realistic Low-Frequency ACINT Profiles (Hz)
 VESSEL_ACOUSTIC_PROFILES = {
     "cargo": {
-        "engine_frequency": 120.0,
-        "blade_frequencies": [240.0, 360.0],
-        "ocean_noise_level": 0.3,
-    },
-    "tanker": {
-        "engine_frequency": 80.0,
-        "blade_frequencies": [160.0, 240.0],
-        "ocean_noise_level": 0.4,
-    },
-    "passenger": {
-        "engine_frequency": 200.0,
-        "blade_frequencies": [400.0, 600.0],
+        "engine_frequency": 30.0,
+        "blade_frequencies": [60.0, 90.0],
+        "shaft_turn_rate": 2.5,
         "ocean_noise_level": 0.2,
     },
-    "tug": {
-        "engine_frequency": 150.0,
-        "blade_frequencies": [300.0, 450.0],
+    "tanker": {
+        "engine_frequency": 20.0,
+        "blade_frequencies": [40.0, 60.0],
+        "shaft_turn_rate": 1.5,
         "ocean_noise_level": 0.25,
     },
+    "passenger": {
+        "engine_frequency": 50.0,
+        "blade_frequencies": [100.0, 150.0],
+        "shaft_turn_rate": 4.0,
+        "ocean_noise_level": 0.15,
+    },
+    "tug": {
+        "engine_frequency": 40.0,
+        "blade_frequencies": [80.0, 120.0],
+        "shaft_turn_rate": 3.0,
+        "ocean_noise_level": 0.2,
+    },
 }
+
+
+def apply_ocean_lowpass_filter(
+    signal: np.ndarray, cutoff_hz: float = 800.0, sr: int = SAMPLING_RATE
+) -> np.ndarray:
+    """Applies a Butterworth low-pass filter to attenuate/absorb high-frequency
+    static, simulating underwater acoustic absorption."""
+
+    # Split into 2nd-degree chunks: Dropoff, Cutoff, Keep the low frequencies
+    sos = butter(N=4, Wn=cutoff_hz, btype="lowpass", fs=sr, output="sos")
+    filtered_signal = sosfilt(sos, signal)
+    return filtered_signal
 
 
 def generate_synthetic_vessel_audio(
     engine_frequency: float,
     blade_frequencies: list[float],
+    shaft_turn_rate: float,
     ocean_noise_level: float,
     audio_duration_seconds: float = DURATION,
     sampling_rate_hz: int = SAMPLING_RATE,
@@ -71,21 +115,32 @@ def generate_synthetic_vessel_audio(
     for freq in blade_frequencies:
         engine_signal += 0.5 * np.sin(2.0 * np.pi * freq * time_points_array)
 
+    # Apply Propeller Cavitation Modulation ("chug-chug" blade envelope)
+    cavitation_envelope = 0.5 * (
+        1.0 + np.sin(2.0 * np.pi * shaft_turn_rate * time_points_array)
+    )
+    modulated_engine_signal = engine_signal * (0.6 + 0.4 * cavitation_envelope)
+
     # Gaussian white noise to simulate background ocean noise.
     # 'mean=0' centres the wave, 'scale' sets the volume/standard deviation.
     ambient_ocean_noise = np.random.normal(
         loc=0.0, scale=ocean_noise_level, size=time_points_array.shape
     )
 
-    # Combine engine_signal and ambient_ocean_noise into a single audio signal.
-    raw_audio_signal = engine_signal + ambient_ocean_noise
+    # Combine engine, blades, cavitation, and ocean noise into a single signal.
+    combined_audio_signal = modulated_engine_signal + ambient_ocean_noise
+
+    # Filter out high frequencies above 800 Hz to simulate deep ocean water
+    hydrophone_audio = apply_ocean_lowpass_filter(
+        combined_audio_signal, cutoff_hz=800.0, sr=sampling_rate_hz
+    )
 
     # Normalization Step:
     # 1. Find the absolute highest combined_raw_audio_signal amplitude peak.
     # 2. Divide by the amplitude so all values scale between -1.0 and +1.0.
     # 3. Scale to fit 16-bit signed integer PCM wave format (-32768 to 32767).
-    max_amplitude = np.max(np.abs(raw_audio_signal))
-    normalized_audio = raw_audio_signal / max_amplitude
+    max_amplitude = np.max(np.abs(hydrophone_audio))
+    normalized_audio = hydrophone_audio / max_amplitude
     normalized_16bit_pcm_audio = np.int16(normalized_audio * 32767)
 
     return normalized_16bit_pcm_audio
@@ -111,6 +166,7 @@ def main():
             audio_data = generate_synthetic_vessel_audio(
                 engine_frequency=parameters["engine_frequency"],
                 blade_frequencies=parameters["blade_frequencies"],
+                shaft_turn_rate=parameters["shaft_turn_rate"],
                 ocean_noise_level=parameters["ocean_noise_level"],
             )
 

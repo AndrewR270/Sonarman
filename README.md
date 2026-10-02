@@ -18,4 +18,4 @@ Install Dependencies: `pip install -r requirements.txt`
 
 ## Devlog
 
-10/1: Added scaffolding, new miniconda evnrionment, synthetic_gen.py, lint checks and formatting.
+10/1: Added scaffolding, new miniconda evnrionment, synthetic_gen.py, audio_checker.py, lint checks and formatting.
