@@ -1,0 +1,16 @@
+# Deep Learning & Models
+torch
+torchaudio
+transformers
+datasets
+accelerate
+
+# Signal Processing & Data Manipulation
+librosa
+numpy
+pandas
+matplotlib
+
+# Application & UI
+gradio
+tqdm
