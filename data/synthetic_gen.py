@@ -6,7 +6,7 @@ import scipy.io.wavfile as wavfile_writer
 # Global Audio & Dataset Configuration Settings
 # ==============================================================================
 SAMPLING_RATE = 22050  # Num of amplitude measurements / second (hz)
-DURATION = 5.0    # Playback time for a synthetic audio clip (s)
+DURATION = 5.0  # Playback time for a synthetic audio clip (s)
 SAMPLES_PER_CLASS = 10  # Num of unique .wav files per vessel class
 RAW_AUDIO_OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "raw")
 
@@ -51,7 +51,7 @@ def generate_synthetic_vessel_audio(
     sampling_rate_hz: int = SAMPLING_RATE,
 ) -> np.ndarray:
     """Generates a synthetic hydrophone audio signal containing fundamental
-     engine tones, propeller blade harmonics, and ambient ocean noise."""
+    engine tones, propeller blade harmonics, and ambient ocean noise."""
 
     total_audio_sample_count = int(sampling_rate_hz * audio_duration_seconds)
 
@@ -60,7 +60,7 @@ def generate_synthetic_vessel_audio(
         start=0.0,
         stop=audio_duration_seconds,
         num=total_audio_sample_count,
-        endpoint=False
+        endpoint=False,
     )
 
     # Float array for the acoustic signal (sine wave) of the engine frequency.
@@ -74,9 +74,7 @@ def generate_synthetic_vessel_audio(
     # Gaussian white noise to simulate background ocean noise.
     # 'mean=0' centres the wave, 'scale' sets the volume/standard deviation.
     ambient_ocean_noise = np.random.normal(
-        loc=0.0,
-        scale=ocean_noise_level,
-        size=time_points_array.shape
+        loc=0.0, scale=ocean_noise_level, size=time_points_array.shape
     )
 
     # Combine engine_signal and ambient_ocean_noise into a single audio signal.
@@ -113,7 +111,7 @@ def main():
             audio_data = generate_synthetic_vessel_audio(
                 engine_frequency=parameters["engine_frequency"],
                 blade_frequencies=parameters["blade_frequencies"],
-                ocean_noise_level=parameters["ocean_noise_level"]
+                ocean_noise_level=parameters["ocean_noise_level"],
             )
 
             # Format the output file name with two-digit zero padding
