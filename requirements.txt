@@ -15,3 +15,6 @@ soundfile
 # Application & UI
 gradio
 tqdm
+fastapi
+uvicorn
+python-multipart

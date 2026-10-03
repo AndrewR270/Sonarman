@@ -36,6 +36,8 @@ Evaluate dataset: `python -m src.evaluate`
 
 Predict file: `python -m src.predict [file]`
 
+Run graphical interface: `uvicorn app:app --reload`
+
 ## Preprocessing Pipeline
 
 Preprocessing handles the transformation of 16-bit PCM audio waveforms (.wav) to log-scaled Mel-Spectrogram tensors (.pt) suitable for training PyTorch 2D Convolutional Neural Networks (CNNs).
