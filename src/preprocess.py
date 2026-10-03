@@ -1,6 +1,6 @@
 import os
+import soundfile as sf
 import torch
-import torchaudio
 import torchaudio.transforms as T
 
 # ==============================================================================
@@ -23,22 +23,25 @@ def compute_mel_spectrogram(
     hop_length: int = HOP_LENGTH,
     n_mels: int = MEL_BANDS,
 ) -> torch.Tensor:
-    """Loads a .wav audio file and computes a log-scaled Mel-Spectrogram,
-    returning a tensor of shape [1, N_MELS, TIME_FRAMES]."""
+    # 1. Load audio data as float32 using soundfile
+    data, sr = sf.read(audio_path, dtype="float32")
 
-    # PyTorch FloatTensor, native sampling rate from .wav header
-    waveform, sr = torchaudio.load(audio_path)
+    # Convert numpy array to tensor with shape [channels, samples]
+    if data.ndim == 1:
+        waveform = torch.from_numpy(data).unsqueeze(0)
+    else:
+        waveform = torch.from_numpy(data.T)
 
-    # Ensure 22.05 kHz so all input matrices have identical dimensions
+    # 2. Resample if original sample rate differs from target
     if sr != sample_rate:
         resampler = T.Resample(orig_freq=sr, new_freq=sample_rate)
         waveform = resampler(waveform)
 
-    # Average channels [1, total_samples] as hydrophone recordings are mono
+    # 3. Convert multi-channel audio to mono [1, samples]
     if waveform.shape[0] > 1:
         waveform = torch.mean(waveform, dim=0, keepdim=True)
 
-    # Compute Short-Time Fourier Transform (STFT) & Mel Filterbank
+    # 4. Compute Mel Spectrogram
     mel_transform = T.MelSpectrogram(
         sample_rate=sample_rate,
         n_fft=n_fft,
@@ -47,10 +50,9 @@ def compute_mel_spectrogram(
     )
     mel_spectrogram = mel_transform(waveform)
 
-    # Converts to DB and clips low signals to suppress background noise
+    # 5. Convert amplitude to dB scale
     log_mel_spectrogram = T.AmplitudeToDB(top_db=80.0)(mel_spectrogram)
 
-    # Output shape: [1, 128, TIME_FRAMES]
     return log_mel_spectrogram
 
 

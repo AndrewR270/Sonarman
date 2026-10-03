@@ -10,6 +10,7 @@ librosa
 numpy
 pandas
 matplotlib
+soundfile
 
 # Application & UI
 gradio
