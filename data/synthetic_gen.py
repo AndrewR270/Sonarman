@@ -2,6 +2,7 @@ import os
 import numpy as np
 import scipy.io.wavfile as wavfile_writer
 from scipy.signal import butter, sosfilt
+from config.vessel_profiles import VESSEL_ACOUSTIC_PROFILES
 
 # ==============================================================================
 # Global Audio & Dataset Configuration Settings
@@ -21,57 +22,6 @@ RAW_AUDIO_OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "raw")
 #     "ocean_noise_level": Amplitude multiplier for ambient ocean noise
 # },
 # ==============================================================================
-
-# VESSEL_ACOUSTIC_PROFILES = {
-#     "cargo": {
-#         "engine_frequency": 120.0,
-#         "blade_frequencies": [240.0, 360.0],
-#         "ocean_noise_level": 0.3,
-#     },
-#     "tanker": {
-#         "engine_frequency": 80.0,
-#         "blade_frequencies": [160.0, 240.0],
-#         "ocean_noise_level": 0.4,
-#     },
-#     "passenger": {
-#         "engine_frequency": 200.0,
-#         "blade_frequencies": [400.0, 600.0],
-#         "ocean_noise_level": 0.2,
-#     },
-#     "tug": {
-#         "engine_frequency": 150.0,
-#         "blade_frequencies": [300.0, 450.0],
-#         "ocean_noise_level": 0.25,
-#     },
-# }
-
-# Realistic Low-Frequency ACINT Profiles (Hz)
-VESSEL_ACOUSTIC_PROFILES = {
-    "cargo": {
-        "engine_frequency": 30.0,
-        "blade_frequencies": [60.0, 90.0],
-        "shaft_turn_rate": 2.5,
-        "ocean_noise_level": 0.2,
-    },
-    "tanker": {
-        "engine_frequency": 20.0,
-        "blade_frequencies": [40.0, 60.0],
-        "shaft_turn_rate": 1.5,
-        "ocean_noise_level": 0.25,
-    },
-    "passenger": {
-        "engine_frequency": 50.0,
-        "blade_frequencies": [100.0, 150.0],
-        "shaft_turn_rate": 4.0,
-        "ocean_noise_level": 0.15,
-    },
-    "tug": {
-        "engine_frequency": 40.0,
-        "blade_frequencies": [80.0, 120.0],
-        "shaft_turn_rate": 3.0,
-        "ocean_noise_level": 0.2,
-    },
-}
 
 
 def apply_ocean_lowpass_filter(
