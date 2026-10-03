@@ -18,9 +18,23 @@ Install Dependencies: `pip install -r requirements.txt`
 
 ## Commands
 
-Generate synthetic audio (from root): `python -m data.synthetic_gen`
+Run these from root.
 
-Analyze audio file (from root): `python data.audio_checker [options]` (use --help if needed)
+Generate synthetic audio: `python -m data.synthetic_gen`
+
+Analyze audio file: `python data.audio_checker [options]` (use --help if needed)
+
+Preprocess audio files: `python -m src.preprocess`
+
+Run dataset: `python -m src.dataset`
+
+Run modeling: `python -m src.model`
+
+Train model: `python -m src.train`
+
+Evaluate dataset: `python -m src.evaluate`
+
+Predict file: `python -m src.predict [file]`
 
 ## Preprocessing Pipeline
 
