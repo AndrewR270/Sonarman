@@ -39,3 +39,5 @@ To allow for more accurate neural net training. AmplitudeToDB converts linear po
 ## Devlog
 
 10/1: Added scaffolding, new miniconda evnrionment, synthetic_gen.py, audio_checker.py, lint checks and formatting.
+
+10/2: Added preprocessing piepeline, overhauled audio checker, and adjusted synthetic generation params.
