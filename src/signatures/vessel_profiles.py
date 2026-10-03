@@ -4,6 +4,17 @@ Contains baseline acoustic signatures for submarines, surface combatants,
 and commercial shipping.
 """
 
+# ==============================================================================
+# Acoustic Profiles for Different Vessel Categories
+# Dictionary entries define the acoustic fingerprint / signature of ship class
+# "type": {
+#     "engine_frequency": Primary engine firing/rotation frequency (hz)
+#     "blade_frequencies": Overtones produced by propeller blades
+#     "shaft_turn_rate": Propeller shaft rotation frequency / second (hz)
+#     "ocean_noise_level": Amplitude multiplier for ambient ocean noise
+# },
+# ==============================================================================
+
 # Base dictionary for scale & easy extension
 VESSEL_ACOUSTIC_PROFILES = {
     # --------------------------------------------------------------------------

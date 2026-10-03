@@ -7,21 +7,11 @@ from src.signatures.vessel_profiles import VESSEL_ACOUSTIC_PROFILES
 # ==============================================================================
 # Global Audio & Dataset Configuration Settings
 # ==============================================================================
+
 SAMPLING_RATE = 22050  # Num of amplitude measurements / second (hz)
 DURATION = 5.0  # Playback time for a synthetic audio clip (s)
 SAMPLES_PER_CLASS = 10  # Num of unique .wav files per vessel class
 RAW_AUDIO_OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "raw")
-
-# ==============================================================================
-# Acoustic Profiles for Different Vessel Categories
-# Dictionary entries define the acoustic fingerprint / signature of ship class
-# "type": {
-#     "engine_frequency": Primary engine firing/rotation frequency (hz)
-#     "blade_frequencies": Overtones produced by propeller blades
-#     "shaft_turn_rate": Propeller shaft rotation frequency / second (hz)
-#     "ocean_noise_level": Amplitude multiplier for ambient ocean noise
-# },
-# ==============================================================================
 
 
 def apply_ocean_lowpass_filter(

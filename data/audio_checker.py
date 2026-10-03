@@ -63,7 +63,7 @@ def main() -> None:
         type=str,
         nargs="?",
         default="data/raw/cargo/cargo_01.wav",
-        help="Path to the target .wav file",
+        help="Path to target .wav file (default: data/raw/cargo/cargo_01.wav)",
     )
     parser.add_argument(
         "--top",
