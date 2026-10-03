@@ -16,6 +16,12 @@ Check current environment: `conda env list`
 
 Install Dependencies: `pip install -r requirements.txt`
 
+## Commands
+
+Generate synthetic audio (from root): `python -m data.synthetic_gen`
+
+Analyze audio file (from root): `python data.audio_checker [options]` (use --help if needed)
+
 ## Devlog
 
 10/1: Added scaffolding, new miniconda evnrionment, synthetic_gen.py, audio_checker.py, lint checks and formatting.

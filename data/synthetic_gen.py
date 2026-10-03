@@ -2,7 +2,7 @@ import os
 import numpy as np
 import scipy.io.wavfile as wavfile_writer
 from scipy.signal import butter, sosfilt
-from config.vessel_profiles import VESSEL_ACOUSTIC_PROFILES
+from src.signatures.vessel_profiles import VESSEL_ACOUSTIC_PROFILES
 
 # ==============================================================================
 # Global Audio & Dataset Configuration Settings

@@ -1,1 +1,13 @@
-data/raw
+# Byte-compiled / Python artifacts
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+
+# Generated Sonar Datasets (Ignore heavy audio and processed tensor outputs)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
