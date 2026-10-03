@@ -10,15 +10,11 @@ class SonarClassifier(nn.Module):
         super(SonarClassifier, self).__init__()
 
         # Conv Block 1
-        self.conv1 = nn.Conv2d(
-            in_channels=1, out_channels=16, kernel_size=3, padding=1
-        )
+        self.conv1 = nn.Conv2d(1, 16, kernel_size=3, padding=1)
         self.bn1 = nn.BatchNorm2d(16)
 
         # Conv Block 2
-        self.conv2 = nn.Conv2d(
-            in_channels=16, out_channels=32, kernel_size=3, padding=1
-        )
+        self.conv2 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
         self.bn2 = nn.BatchNorm2d(32)
 
         # Conv Block 3

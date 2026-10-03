@@ -52,8 +52,8 @@ async def predict_audio(file: UploadFile = File(...)):
 
         top_prob, top_idx = torch.max(probs, dim=0)
         predictions = {
-            cls: round(prob.item() * 100, 2) 
-            for cls, prob in zip(CLASSES, probs)
+            cls: round(prob.item() * 100, 2)
+            for cls, prob in zip(CLASSES, probs)  # noqa: E501
         }
 
         return {
