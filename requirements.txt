@@ -10,7 +10,11 @@ librosa
 numpy
 pandas
 matplotlib
+soundfile
 
 # Application & UI
 gradio
 tqdm
+fastapi
+uvicorn
+python-multipart
